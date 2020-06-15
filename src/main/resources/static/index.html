@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="cn">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <title>FS</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css">
+</head>
+<body>
+<button id="goBack" onclick="goBack()" type="button" class="btn btn-success" style="width: 100%">cd ..</button>
+<div id="path"></div>
+<table class="table table-striped table-hover ">
+    <thead>
+    <tr>
+        <th>名称</th>
+        <th>路径</th>
+        <th>大小(字节)</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody id="contentBody">
+
+    </tbody>
+</table>
+<form action="/main/upload" class="dropzone" id="dropzone">
+    <div class="fallback">
+        <input name="file" type="file" multiple />
+    </div>
+</form>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.js"></script>
+<script>
+
+    Dropzone.options.dropzone = {
+        maxFilesize: 2000 // MB
+    };
+
+    let nowPath = "";
+    const contentBody = document.getElementById("contentBody");
+    const path = document.getElementById("path");
+
+    function get(url) {
+        const request = new XMLHttpRequest();
+        request.open("GET", url, false);
+        request.send();
+        return JSON.parse(request.responseText);
+    }
+
+    function loadData(path) {
+        let body = get("/main/list?path=" + path);
+        if (1000 !== body['code']){
+            return;
+        }
+        let s = body['body']['files'];
+        nowPath = body['body']['path'];
+        let contentAdd = "";
+        s.forEach(function (va, index) {
+            let aTag = "<a href='main/download?path="+va['path']+"' download='"+va['name']+"'>下载</a>";
+            if (va['folder']){
+                aTag = "";
+            }
+            contentAdd += "<tr class=\"table-active\" onclick=\"clickPath('" + va['path'] + "')\">\n" +
+                "        <td>" + va['name'] + "</td>\n" +
+                "        <td>" + va['path'] + "</td>\n" +
+                "        <td>" + va['size'] + "</td>\n" +
+                "        <td>"+aTag+"</td>\n" +
+                "    </tr>"
+        })
+        contentBody.innerHTML = contentAdd;
+        setPath();
+    }
+
+    function clickPath(path) {
+        loadData(path);
+    }
+
+    function setPath() {
+        path.innerText = "路径: " + nowPath;
+    }
+
+    loadData("")
+
+    function goBack() {
+        let end = nowPath.lastIndexOf("/");
+        loadData(nowPath.substring(0, end === 0 ? 1 : end))
+    }
+
+</script>
+
+</body>
+</html>
