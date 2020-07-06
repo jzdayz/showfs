@@ -22,6 +22,7 @@ public class R {
     private int code = SUCCESS_CODE;
     @Builder.Default
     private String message = "success";
+    @Builder.Default
     private Map<String,Object> body = new HashMap<>();
 
     public static R ok(){

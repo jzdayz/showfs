@@ -33,7 +33,10 @@
 <script>
 
     Dropzone.options.dropzone = {
-        maxFilesize: 2000 // MB
+        // 1TB
+        maxFilesize: 1048576, // MB
+        // 1 hour
+        timeout: 3600000//milliseconds
     };
 
     let nowPath = "";
@@ -47,8 +50,8 @@
         return JSON.parse(request.responseText);
     }
 
-    function loadData(path) {
-        let body = get("/main/list?path=" + path);
+    function loadData(path,back) {
+        let body = get("/main/list?path=" + path+"&back="+back);
         if (1000 !== body['code']){
             return;
         }
@@ -72,18 +75,17 @@
     }
 
     function clickPath(path) {
-        loadData(path);
+        loadData(path,false);
     }
 
     function setPath() {
         path.innerText = "路径: " + nowPath;
     }
 
-    loadData("")
+    loadData("",false)
 
     function goBack() {
-        let end = nowPath.lastIndexOf("/");
-        loadData(nowPath.substring(0, end === 0 ? 1 : end))
+        loadData(nowPath,true)
     }
 
 </script>

@@ -32,10 +32,16 @@ public class FsService {
     private FileSystemManager fileSystemManager;
     private ResourceLoader resourceLoader;
 
-    public Map<String,Object> list(String path) throws Exception{
+    public Map<String,Object> list(String path, Boolean back) throws Exception{
         path = StringUtils.isEmpty(path) ? fsProperties.getPath() : path;
         FileObject fileObject =
                 fileSystemManager.resolveFile(path);
+        if (back){
+            FileObject parent = fileObject.getParent();
+            if (parent!=null) {
+                fileObject = parent;
+            }
+        }
         if (!fileObject.isFolder()){
             return Collections.emptyMap();
         }
@@ -48,7 +54,7 @@ public class FsService {
                         .filter(k->ExceptionUtils.ex(()->!k.isHidden(),true))
                         .map(FileObj::trans)
                         .toArray());
-        maps.put("path",path);
+        maps.put("path",fileObject.toString());
         return maps;
     }
 
@@ -80,7 +86,7 @@ public class FsService {
         public static FileObj trans(FileObject fileObject){
             return FileObj.builder()
                     .name(fileObject.getName().getBaseName())
-                    .path(fileObject.getName().getPath())
+                    .path(fileObject.getName().toString())
                     .folder(ExceptionUtils.ex(fileObject::isFolder,Boolean.TRUE))
                     .size(ExceptionUtils.ex(()->fileObject.getContent().getSize(),0L))
                     .build();

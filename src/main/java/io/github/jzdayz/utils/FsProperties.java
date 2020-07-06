@@ -9,4 +9,6 @@ public class FsProperties {
 
     private String path = System.getProperty("user.dir");
 
+    private Boolean safe = Boolean.FALSE;
+
 }
