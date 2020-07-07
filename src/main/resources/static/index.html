@@ -60,10 +60,13 @@
         let contentAdd = "";
         s.forEach(function (va, index) {
             let aTag = "<a href='main/download?path="+va['path']+"' download='"+va['name']+"'>下载</a>";
-            if (va['folder']){
+            let folder = va['folder'];
+            let onClick = "";
+            if (folder){
                 aTag = "";
+                onClick = "onclick=clickPath('" + va['path'] + "') ";
             }
-            contentAdd += "<tr class=\"table-active\" onclick=\"clickPath('" + va['path'] + "')\">\n" +
+            contentAdd += "<tr class=\"table-active\" "+onClick+" >\n" +
                 "        <td>" + va['name'] + "</td>\n" +
                 "        <td>" + va['path'] + "</td>\n" +
                 "        <td>" + va['size'] + "</td>\n" +
