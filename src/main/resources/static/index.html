@@ -26,7 +26,7 @@
 </table>
 <form action="/main/upload" class="dropzone" id="dropzone">
     <div class="fallback">
-        <input name="file" type="file" multiple />
+        <input name="file" type="file" multiple/>
     </div>
 </form>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.js"></script>
@@ -50,27 +50,30 @@
         return JSON.parse(request.responseText);
     }
 
-    function loadData(path,back) {
-        let body = get("/main/list?path=" + path+"&back="+back);
-        if (1000 !== body['code']){
+    function loadData(path, back) {
+        let body = get("/main/list?path=" + path + "&back=" + back);
+        if (1000 !== body['code']) {
             return;
         }
         let s = body['body']['files'];
         nowPath = body['body']['path'];
         let contentAdd = "";
         s.forEach(function (va, index) {
-            let aTag = "<a href='main/download?path="+va['path']+"' download='"+va['name']+"'>下载</a>";
+            let aTag = "<a href='main/download?path=" + va['path'] + "' download='" + va['name'] + "'>下载</a>";
+            let showUrl = "main/show?path=" + va['path'];
+            let show = "<a style='cursor:pointer' onclick=urlOpen('"+showUrl+"')>显示</a>";
             let folder = va['folder'];
             let onClick = "";
-            if (folder){
+            if (folder) {
                 aTag = "";
+                show = "";
                 onClick = "onclick=clickPath('" + va['path'] + "') ";
             }
-            contentAdd += "<tr class=\"table-active\" "+onClick+" >\n" +
+            contentAdd += "<tr class=\"table-active\" " + onClick + " >\n" +
                 "        <td>" + va['name'] + "</td>\n" +
                 "        <td>" + va['path'] + "</td>\n" +
                 "        <td>" + va['size'] + "</td>\n" +
-                "        <td>"+aTag+"</td>\n" +
+                "        <td>" + aTag + ' ' + show + "</td>\n" +
                 "    </tr>"
         })
         contentBody.innerHTML = contentAdd;
@@ -78,17 +81,21 @@
     }
 
     function clickPath(path) {
-        loadData(path,false);
+        loadData(path, false);
+    }
+    
+    function urlOpen(url) {
+        window.open(url);
     }
 
     function setPath() {
         path.innerText = "路径: " + nowPath;
     }
 
-    loadData("",false)
+    loadData("", false);
 
     function goBack() {
-        loadData(nowPath,true)
+        loadData(nowPath, true)
     }
 
 </script>
