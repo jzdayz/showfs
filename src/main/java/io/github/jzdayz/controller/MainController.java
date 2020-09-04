@@ -1,9 +1,12 @@
 package io.github.jzdayz.controller;
 
 import io.github.jzdayz.service.FsService;
+import io.github.jzdayz.utils.IpUtil;
 import io.github.jzdayz.utils.R;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +32,8 @@ public class MainController {
 
     private FsService fsService;
 
+    private ServerProperties serverProperties;
+
     @ResponseBody
     @RequestMapping("list")
     public R list(String path, Boolean back) throws Exception {
@@ -34,6 +42,15 @@ public class MainController {
             return R.error();
         }
         return R.ok(res);
+    }
+
+    @RequestMapping("head")
+    public ResponseEntity<String> head() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE,"text/plain");
+        return new ResponseEntity<>(
+                String.format("http://%s:%s", IpUtil.getIp(), serverProperties.getPort()),headers, HttpStatus.OK
+        );
     }
 
 
@@ -67,8 +84,39 @@ public class MainController {
     @ResponseBody
     @RequestMapping("upload")
     public Object upload(FilePart file) throws Exception {
-        if (fsService.createFile(file)) {
-            return R.ok();
+        while (!fsService.createFile(file)) {
+            FilePart finalFile = file;
+            file = new FilePart() {
+                @Override
+                public String filename() {
+                    String filename = finalFile.filename();
+                    String[] f = filename.split("\\.");
+                    if (f.length != 2) {
+                        throw new RuntimeException();
+                    }
+                    return f[0] + "1" + "." + f[1];
+                }
+
+                @Override
+                public Mono<Void> transferTo(Path dest) {
+                    return finalFile.transferTo(dest);
+                }
+
+                @Override
+                public String name() {
+                    return finalFile.name();
+                }
+
+                @Override
+                public HttpHeaders headers() {
+                    return finalFile.headers();
+                }
+
+                @Override
+                public Flux<DataBuffer> content() {
+                    return finalFile.content();
+                }
+            };
         }
         return R.error("file exists");
     }
