@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reactor.core.publisher.Flux;
@@ -43,6 +44,16 @@ public class MainController {
         }
         return R.ok(res);
     }
+
+//    @RequestMapping("delete")
+//    public ResponseEntity<String> delete(String path) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set(HttpHeaders.CONTENT_TYPE,"text/plain");
+//        fsService.delete(path.replace("file://", ""));
+//        return new ResponseEntity<>(
+//                "OK",headers, HttpStatus.OK
+//        );
+//    }
 
     @RequestMapping("head")
     public ResponseEntity<String> head() {

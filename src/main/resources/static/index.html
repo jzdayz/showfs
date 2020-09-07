@@ -4,14 +4,17 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width"/>
-    <title>FS</title>
+    <title>文件</title>
+    <link rel="icon" type="image/png" href="./images/favicon.ico"/>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css">
+    <link rel="stylesheet" href="./css/dropzone-5.7.1.css">
 </head>
 <body>
-<h4 id="head" align="center" onclick="copyHead()"></h4>
+<h2 id="head" align="center" style="padding: 10px;" onclick="copyHead()"></h2>
 <button id="goBack" onclick="goBack()" type="button" class="btn btn-success" style="width: 100%">cd ..</button>
-<div id="path"></div>
+<div class="alert alert-dismissible alert-secondary">
+    <strong id="path"></strong>
+</div>
 <table class="table table-striped table-hover ">
     <thead>
     <tr>
@@ -52,18 +55,26 @@
         return JSON.parse(request.responseText);
     }
 
-    function copyHead(){
+    function copyHead() {
         window.getSelection().selectAllChildren(head);
-        document.execCommand ("Copy");
+        document.execCommand("Copy");
     }
 
-    function loadHead(){
+    function loadHead() {
         const request = new XMLHttpRequest();
         request.open("GET", "/main/head", false);
         request.send();
         head.innerText = request.responseText;
     }
+
     loadHead();
+
+    function deleteFile(path) {
+        // const request = new XMLHttpRequest();
+        // request.open("GET", "/main/delete?path=" + path, false);
+        // request.send();
+        // window.Location.reload(true);
+    }
 
     function loadData(path, back) {
         let body = get("/main/list?path=" + path + "&back=" + back);
@@ -74,31 +85,39 @@
         nowPath = body['body']['path'];
         let contentAdd = "";
         s.forEach(function (va, index) {
-            let aTag = "<a href='main/download?path=" + va['path'] + "' download='" + va['name'] + "'>下载</a>";
+            let aTagHide = "<a hidden href='main/download?path=" + va['path'] + "' download='" + va['name'] + "'>下载</a>";
+            let aTag = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick='clickNextTag(this)'>下载</button>";
             let showUrl = "main/show?path=" + va['path'];
-            let show = "<a style='cursor:pointer' onclick=urlOpen('"+showUrl+"')>显示</a>";
+            let show = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=urlOpen('" + showUrl + "')>显示</button>";
             let folder = va['folder'];
+            let deleteFlag = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=deleteFile('" + va['path'] + "')>删除</button>";
             let onClick = "";
             if (folder) {
                 aTag = "";
                 show = "";
+                deleteFlag = "";
+                aTagHide = "";
                 onClick = "onclick=clickPath('" + va['path'] + "') ";
             }
             contentAdd += "<tr class=\"table-active\" " + onClick + " >\n" +
                 "        <td>" + va['name'] + "</td>\n" +
                 "        <td>" + va['path'] + "</td>\n" +
                 "        <td>" + va['size'] + "</td>\n" +
-                "        <td>" + aTag + ' ' + show + "</td>\n" +
+                "        <td>" + aTag + aTagHide + ' ' + show + ' ' + deleteFlag + "</td>\n" +
                 "    </tr>"
         })
         contentBody.innerHTML = contentAdd;
         setPath();
     }
 
+    function clickNextTag(e) {
+        e.nextElementSibling.click();
+    }
+
     function clickPath(path) {
         loadData(path, false);
     }
-    
+
     function urlOpen(url) {
         window.open(url);
     }
