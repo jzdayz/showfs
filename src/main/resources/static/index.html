@@ -66,7 +66,6 @@
         request.send();
         head.innerText = request.responseText;
     }
-
     loadHead();
 
     function deleteFile(path) {
@@ -85,24 +84,28 @@
         nowPath = body['body']['path'];
         let contentAdd = "";
         s.forEach(function (va, index) {
-            let aTagHide = "<a hidden href='main/download?path=" + va['path'] + "' download='" + va['name'] + "'>下载</a>";
+            let aTagHide = `<a hidden href='main/download?path=${va['path']}' download='${va['name']}'>下载</a>`;
             let aTag = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick='clickNextTag(this)'>下载</button>";
             let showUrl = "main/show?path=" + va['path'];
             let show = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=urlOpen('" + showUrl + "')>显示</button>";
             let folder = va['folder'];
             let deleteFlag = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=deleteFile('" + va['path'] + "')>删除</button>";
             let onClick = "";
+            let badgeDir = "";
+            let badgeFile = "  <span class=\"badge badge-pill badge-secondary\">文件</span>";
             if (folder) {
                 aTag = "";
                 show = "";
                 deleteFlag = "";
                 aTagHide = "";
+                badgeDir = "  <span class=\"badge badge-pill badge-primary\">目录</span>";
+                badgeFile = "";
                 onClick = "onclick=clickPath('" + va['path'] + "') ";
             }
             contentAdd += "<tr class=\"table-active\" " + onClick + " >\n" +
                 "        <td>" + va['name'] + "</td>\n" +
-                "        <td>" + va['path'] + "</td>\n" +
-                "        <td>" + va['size'] + "</td>\n" +
+                "        <td>" + va['path'] + badgeDir + badgeFile + "</td>\n" +
+                "        <td>" + (va['size'] === 0 ? "" : va['size']) + "</td>\n" +
                 "        <td>" + aTag + aTagHide + ' ' + show + ' ' + deleteFlag + "</td>\n" +
                 "    </tr>"
         })
