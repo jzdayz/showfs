@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reactor.core.publisher.Flux;
@@ -62,6 +61,16 @@ public class MainController {
         return new ResponseEntity<>(
                 String.format("http://%s:%s", IpUtil.getIp(), serverProperties.getPort()),headers, HttpStatus.OK
         );
+    }
+
+
+    @RequestMapping("resource")
+    public ResponseEntity<Resource> resource(String path){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE,"video/mp4");
+        return new ResponseEntity<>(fsService.resource(path.replace("file://", "")),
+                headers,
+                HttpStatus.OK);
     }
 
 

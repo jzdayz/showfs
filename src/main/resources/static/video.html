@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="cn">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <title>视频</title>
+    <link rel="icon" type="image/png" href="./images/favicon.ico"/>
+    <link rel="stylesheet" href="./css/plyr.css">
+    <style>
+        #box {
+            height: 100%;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <video id="player" playsinline controls>
+        <source id="source" type="video/mp4"/>
+    </video>
+</div>
+<script type="text/javascript" src="./js/plyr.min.js"></script>
+<script>
+    const player = new Plyr('#player');
+
+    function getQueryVariable(variable) {
+        const query = window.location.search.substring(1);
+        const vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if (pair[0] === variable) {
+                return pair[1];
+            }
+        }
+        return false;
+    }
+
+    let source = document.getElementById("source");
+    source.src = "main/resource?path=" + getQueryVariable("path");
+</script>
+</body>
+</html>
