@@ -56,8 +56,8 @@
     Dropzone.options.dropzone = {
         // 1TB
         maxFilesize: 1048576, // MB
-        // 1 hour
-        timeout: 3600000//milliseconds
+        // 2 hour
+        timeout: 7200000//milliseconds
     };
 
     let nowPath = "";
@@ -107,7 +107,7 @@
             let showUrl = "main/show?path=" + va['path'];
             let show = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=urlOpen('" + showUrl + "')>显示</button>";
             let folder = va['folder'];
-            let deleteFlag = "<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=deleteFile('" + va['path'] + "')>删除</button>";
+            let deleteFlag =  "";//"<button type=\"button\" class=\"btn btn-success\" style='cursor:pointer' onclick=deleteFile('" + va['path'] + "')>删除</button>";
             let onClick = "";
             let badgeDir = "";
             let badgeFile = "  <span class=\"badge badge-pill badge-secondary\">文件</span>";
