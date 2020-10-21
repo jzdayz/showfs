@@ -9,12 +9,13 @@ import org.apache.commons.vfs2.VFS;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableConfigurationProperties(FsProperties.class)
 @Slf4j
-public class ShowfsApplication {
+public class FsFluxApplication {
 
 	static {
 		int port = SocketUtils.availablePort();
@@ -23,7 +24,7 @@ public class ShowfsApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ShowfsApplication.class, args);
+		SpringApplication.run(FsFluxApplication.class, args);
 	}
 
 	@Bean

@@ -1,0 +1,11 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1TB
+      max-request-size: 1TB
+aliyun:
+  oss:
+    endpoint: http://oss-cn-shanghai.aliyuncs.com
+    access-key-id: LTAI4GDbaWjFmeBWahYcRRj6
+    access-key-secret: GDD58Td0qxAllLlAx1fYxfOPgjsTgT
+    bucket-name: testdddddd1
