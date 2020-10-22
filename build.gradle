@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.1.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.3.1.RELEASE' apply false
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
 }
 
 group = 'io.github.jzdayz'
@@ -9,27 +9,29 @@ version = '0.0.7'
 sourceCompatibility = '1.8'
 
 allprojects {
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 }
 
 subprojects {
 
-	apply plugin: 'java'
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'io.spring.dependency-management'
+    apply from: "${project.rootDir}${File.separator}version.gradle"
 
-	dependencies {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-		compileOnly 'org.projectlombok:lombok:1.18.12'
-		annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    dependencies {
 
-		implementation 'com.aliyun.oss:aliyun-sdk-oss:3.11.1'
-		implementation 'org.apache.commons:commons-vfs2:2.6.0'
-		implementation 'com.google.guava:guava:29.0-jre'
-		testImplementation('org.springframework.boot:spring-boot-starter-test') {
-			exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-		}
-	}
+        compileOnly "org.projectlombok:lombok:${lombok}"
+        annotationProcessor "org.projectlombok:lombok:${lombok}"
+
+        implementation "com.aliyun.oss:aliyun-sdk-oss:${aliyun_oss}"
+        implementation "org.apache.commons:commons-vfs2:${apache_vfs}"
+        implementation "com.google.guava:guava:${guava}"
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+    }
 }

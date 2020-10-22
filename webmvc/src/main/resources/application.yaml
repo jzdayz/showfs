@@ -5,7 +5,7 @@ spring:
       max-request-size: 1TB
 aliyun:
   oss:
-    endpoint: http://oss-cn-shanghai.aliyuncs.com
-    access-key-id: LTAI4GDbaWjFmeBWahYcRRj6
-    access-key-secret: GDD58Td0qxAllLlAx1fYxfOPgjsTgT
+    endpoint: https://oss-cn-shanghai.aliyuncs.com
+    access-key-id: LTAI4GHZsTFReYWLaZzwu4EY
+    access-key-secret: eL92/8B1Oss97Vmf7tt3aQE+4f5/8wlOyJK1DF25Qjo=
     bucket-name: testdddddd1

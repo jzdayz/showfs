@@ -1,0 +1,7 @@
+ext {
+    hu_tool = '5.4.5'
+    guava = '29.0-jre'
+    lombok = '1.18.12'
+    aliyun_oss = '3.11.1'
+    apache_vfs = '2.6.0'
+}

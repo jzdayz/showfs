@@ -22,8 +22,27 @@
 
     </tbody>
 </table>
-<script type="text/javascript">
+<form action="/oss/upload" class="dropzone" id="dropzone">
+    <div class="fallback">
+        <input name="file" type="file" multiple/>
+    </div>
+    <div class="dz-message">点击上传文件(需要同步OSS文件，所以上传之后会有延迟)</div>
+</form>
+<script type="text/javascript" src="./js/dropzone.js"></script>
+<script>
+
+    Dropzone.options.dropzone = {
+        // 1TB
+        maxFilesize: 1048576, // MB
+        // 2 hour
+        timeout: 7200000//milliseconds
+    };
+
     const body = document.getElementById("body");
+
+    function clickNextTag(e) {
+        e.nextElementSibling.click();
+    }
 
     function get(url) {
         const request = new XMLHttpRequest();
@@ -32,13 +51,23 @@
         return JSON.parse(request.responseText);
     }
 
+    function deleteOss(fileName) {
+        const request = new XMLHttpRequest();
+        request.open("GET", `/oss/delete?name=${fileName}`, false);
+        request.send();
+        location.reload();
+    }
+
     let json = get("/oss/list");
     let html = '';
     json.forEach(function (content, index) {
+        let deleted = `<button type=\"button\" class=\"btn btn-primary\" onclick='deleteOss("${content['name']}")'>删除</button>`
+        let download = "<button type=\"button\" class=\"btn btn-primary\" onclick='clickNextTag(this)'>下载</button>"
+
         let htmlRow = `<tr class="table-light">
                             <th scope="row">${content['name']}</th>
                             <td>${content['dataSize']}</td>
-                            <td><a href="${content['tmpUrl']}" download>下载</a></td>
+                            <td>${download}<a hidden href="${content['tmpUrl']}" download>下载</a> ${deleted}</td>
                        </tr>`;
         html += htmlRow;
     })
